@@ -32,11 +32,43 @@ app.use((req, res, next) => {
   next()
 })
 
-app.get('/artists', (req, res) => {
-  let artists = getAllArtists();
-  console.log(artists);
-  res.status(200).json(artists)
+
+app.route('/albums/:albumId')
+  .get((req, res) => {
+    let { albumId } = req.params
+    let albums = getAlbumByAlbumId(albumId)
+    res.status(200).json(albums)
+  })
+  .put((req, res) => {
+    let { albumId } = req.params
+    let album = editAlbumByAlbumId(albumId, req.body)
+    res.status(200).json(album)
+  })
+  .delete((req, res) => {
+    let { albumId } = req.params
+    deleteAlbumByAlbumId(albumId)
+    res.status(200).json({ "message": "Succesfully deleted" })
+  })
+
+app.get('/albums', (req, res) => {
+  let { startsWith } = req.query
+  let albums = getFilteredAlbums(startsWith)
+  res.status(200).json(albums)
 })
+
+app.get('/artists/:artistId/songs')
+
+app.route('/artists/:artistId/albums')
+  .get((req, res) => {
+    let { artistId } = req.params
+    let albums = getAlbumsByArtistId(artistId)
+    res.status(200).json(albums)
+  })
+  .post((req, res) => {
+    let { artistId } = req.params
+    let album = addAlbumByArtistId(artistId, req.body)
+    res.status(200).json(album)
+  })
 
 app.get('/artists/:artistId', (req, res) => {
   let artistId = req.params.artistId
@@ -46,10 +78,6 @@ app.get('/artists/:artistId', (req, res) => {
   } else {
     return res.send("failed")
   }
-})
-
-app.get('/artists/:artistsId/albums', (req, res) => {
-
 })
 
 app.route('/artists/:artistId')
