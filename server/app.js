@@ -48,10 +48,8 @@ app.get('/artists/:artistId', (req, res) => {
   }
 })
 
-app.post('/artists', (req, res) => {
-  let newArtist = addArtist(req.body)
+app.get('/artists/:artistsId/albums', (req, res) => {
 
-  res.status(200).json(newArtist);
 })
 
 app.route('/artists/:artistId')
@@ -64,8 +62,21 @@ app.route('/artists/:artistId')
     let artistId = req.params.artistId
     let editedArtist = editArtistByArtistId(artistId, req.body)
     return res.status(200).json(editedArtist)
-  });
+  })
+  .delete((req, res) => {
+    let artistId = req.params.artistId
+    let deletedArtist = deleteArtistByArtistId(artistId)
+    if (deletedArtist) {
+      res.status(200).json({ "message": "Successfully deleted" })
+    }
+    res.status(404).json({ "message": "Failed deletion" })
+  })
 
+app.route('/artists')
+  .get((req, res) => {
+    let newArtist = addArtist(req.body)
+    res.status(200).json(newArtist);
+  })
 
 // DO NOT MODIFY
 if (require.main === module) {
