@@ -32,6 +32,34 @@ app.use((req, res, next) => {
   next()
 })
 
+app.route('/songs/:songId')
+  .get((req, res) => {
+    let { songId } = req.params
+    let song = getSongBySongId(songId)
+    res.status(200).json(song)
+  })
+  .put((req, res) => {
+    let { songId } = req.params
+    let song = editSongBySongId(songId, req.body)
+    res.status(200).json(song)
+  })
+  .delete((req, res) => {
+    let { songId } = req.params
+    let song = deleteSongBySongId(songId)
+    res.status(200).json(song)
+  })
+
+app.route('/albums/:albumId/songs')
+  .get((req, res) => {
+    let { albumId } = req.params
+    let songs = getSongsByAlbumId(albumId)
+    res.status(200).json(songs)
+  })
+  .post((req, res) => {
+    let { albumId } = req.params
+    let song = addSongByAlbumId(albumId, req.body)
+    res.status(201).json(song)
+  })
 
 app.route('/albums/:albumId')
   .get((req, res) => {
@@ -56,7 +84,12 @@ app.get('/albums', (req, res) => {
   res.status(200).json(albums)
 })
 
-app.get('/artists/:artistId/songs')
+app.get('/artists/:artistId/songs', (req, res) => {
+  let { artistId } = req.params
+  let songs = getSongsByArtistId(artistId)
+  res.status(200).json(songs)
+})
+
 
 app.route('/artists/:artistId/albums')
   .get((req, res) => {
@@ -67,7 +100,7 @@ app.route('/artists/:artistId/albums')
   .post((req, res) => {
     let { artistId } = req.params
     let album = addAlbumByArtistId(artistId, req.body)
-    res.status(200).json(album)
+    res.status(201).json(album)
   })
 
 app.get('/artists/:artistId', (req, res) => {
